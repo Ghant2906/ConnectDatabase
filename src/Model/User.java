@@ -19,20 +19,6 @@ public class User {
     private String favourites;
     private String about;
 
-    public User(int id, String name, String phone, String username, String password, String role, String favourites, String about) {
-        this.id = id;
-        this.name = name;
-        this.phone = phone;
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.favourites = favourites;
-        this.about = about;
-    }
-
-    public User() {
-    }
-
     public int getId() {
         return id;
     }
@@ -96,5 +82,6 @@ public class User {
     public void setAbout(String about) {
         this.about = about;
     }
+
     
 }

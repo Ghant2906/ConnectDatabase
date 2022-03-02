@@ -21,8 +21,8 @@ public class UserDao {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<User>();
 
-        Connection connection = JDBCConnection.JDBCConnection();
-        String sql = "select * from User";
+        Connection connection = Connect.getJDBCConection();
+        String sql = "select * from user";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rs = preparedStatement.executeQuery();
@@ -30,12 +30,12 @@ public class UserDao {
                 User user = new User();
                 user.setId(rs.getInt("id"));
                 user.setName(rs.getString("name"));
-                user.setPhone(rs.getString("phone"));
-                user.setUsername(rs.getString("username"));
+                user.setPhone(rs.getString("phoneNumber"));
+                user.setUsername(rs.getString("userName"));
                 user.setPassword(rs.getString("password"));
-                user.setAbout(rs.getString("role"));
-                user.setRole(rs.getString("favourites"));
-                user.setFavourites(rs.getString("about"));
+                user.setRole(rs.getString("role"));
+                user.setFavourites(rs.getString("favorite"));
+                user.setAbout(rs.getString("about"));
                 users.add(user);
             }
         } catch (Exception e) {
@@ -43,10 +43,39 @@ public class UserDao {
         }
         return users;
     }
+    
+    public User getUserById(int id) {
+        
+
+        Connection connection = Connect.getJDBCConection();
+        String sql = "select * from user where id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+                user.setPhone(rs.getString("phoneNumber"));
+                user.setUsername(rs.getString("userName"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
+                user.setFavourites(rs.getString("favorite"));
+                user.setAbout(rs.getString("about"));
+                
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void addUser(User user) {
-        Connection connection = JDBCConnection.JDBCConnection();
-        String sql = "insert into User(name , phone , username , password , about , favourites , role)";
+        Connection connection = Connect.getJDBCConection();
+        String sql = " INSERT INTO user( name, phoneNumber, userName, password, role, favorite, about)"
+                + " VALUE(?,?,?,?,?,?,?) ";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, user.getName());
@@ -63,19 +92,19 @@ public class UserDao {
     }
     
     public void updateUser(User user){
-        Connection connection = JDBCConnection.JDBCConnection();
-        String sql = "Update users set name = ? , phone = ? , username = ? , password = ? , "
-                + " about = ? , favourites = ? , role = ? where id = ? ";
+        Connection connection = Connect.getJDBCConection();
+        String sql = "Update user set name = ? , phoneNumber = ? , userName = ? , password = ? , "
+                + " role = ? , favorite = ? , about = ? where id = ? ";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPhone());
             preparedStatement.setString(3, user.getUsername());
             preparedStatement.setString(4, user.getPassword());
-            preparedStatement.setString(5, user.getAbout());
+            preparedStatement.setString(5, user.getRole());
             preparedStatement.setString(6, user.getFavourites());
-            preparedStatement.setString(7, user.getRole());
-            preparedStatement.setInt(7, user.getId());
+            preparedStatement.setString(7, user.getAbout());
+            preparedStatement.setInt(8, user.getId());
             int rs = preparedStatement.executeUpdate();
             System.out.println(rs);
         } catch (Exception e) {
@@ -84,8 +113,8 @@ public class UserDao {
     }
     
     public void deleteUser(int id){
-       Connection connection = JDBCConnection.JDBCConnection();
-       String sql = "delete from users where id = ?";
+       Connection connection = Connect.getJDBCConection();
+       String sql = "delete from user where id = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
